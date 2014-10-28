@@ -52,10 +52,10 @@
 	<classpathentry kind="lib" path="/usr/local/hadoop/hadoop/share/hadoop/yarn/lib/xz-1.0.jar"/>
 	<classpathentry kind="lib" path="/home/ranger/btp/commons-logging-1.2/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="/home/ranger/btp/commons-logging-1.2/commons-logging-1.2-javadoc.jar"/>
-	<classpathentry kind="lib" path="/home/ranger/Desktop/twitter/lib/twitter4j-async-4.0.2.jar"/>
-	<classpathentry kind="lib" path="/home/ranger/Desktop/twitter/lib/twitter4j-core-4.0.2.jar"/>
-	<classpathentry kind="lib" path="/home/ranger/Desktop/twitter/lib/twitter4j-examples-4.0.2.jar"/>
-	<classpathentry kind="lib" path="/home/ranger/Desktop/twitter/lib/twitter4j-media-support-4.0.2.jar"/>
-	<classpathentry kind="lib" path="/home/ranger/Desktop/twitter/lib/twitter4j-stream-4.0.2.jar"/>
+	<classpathentry kind="lib" path="/home/ranger/btp2k15/libraries/lib/twitter4j-async-4.0.2.jar"/>
+	<classpathentry kind="lib" path="/home/ranger/btp2k15/libraries/lib/twitter4j-core-4.0.2.jar"/>
+	<classpathentry kind="lib" path="/home/ranger/btp2k15/libraries/lib/twitter4j-examples-4.0.2.jar"/>
+	<classpathentry kind="lib" path="/home/ranger/btp2k15/libraries/lib/twitter4j-media-support-4.0.2.jar"/>
+	<classpathentry kind="lib" path="/home/ranger/btp2k15/libraries/lib/twitter4j-stream-4.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
