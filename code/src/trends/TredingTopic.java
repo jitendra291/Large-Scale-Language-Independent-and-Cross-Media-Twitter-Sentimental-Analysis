@@ -24,21 +24,19 @@ public class TredingTopic {
 	 private static final String CONSUMER_SECRET = "O56dgWaU8eKpyOycWUoVNeONr9SWN9sm7x5Od1SES6LbqNDiKo";
 	 private static final String ACCESS_TOKEN = "375078108-WTQvLrtn8JHc2as54lt9D3ayktWzD9SfKk8jAYHT";
 	 private static final String ACCESS_TOKEN_SECRET = "54FZUk2xtKuymij4UUds5VqaIWwG8pU0li2Fjauv89hJ4";
-	 
-	private static Twitter twitter = null;
-	 
-	// construct Twitter instance using configuration
+	 	private static Twitter twitter = null;
+		// construct Twitter instance using configuration
 	 static {
-	 ConfigurationBuilder cb = new ConfigurationBuilder();
-	 cb.setDebugEnabled(true);
-	 cb.setOAuthConsumerKey(CONSUMER_KEY);
-	 cb.setOAuthConsumerSecret(CONSUMER_SECRET);
-	 cb.setOAuthAccessToken(ACCESS_TOKEN);
-	 cb.setOAuthAccessTokenSecret(ACCESS_TOKEN_SECRET);
+	 ConfigurationBuilder cb1 = new ConfigurationBuilder();
+	 cb1.setDebugEnabled(true);
+	 cb1.setOAuthConsumerKey(CONSUMER_KEY);
+	 cb1.setOAuthConsumerSecret(CONSUMER_SECRET);
+	 cb1.setOAuthAccessToken(ACCESS_TOKEN);
+	 cb1.setOAuthAccessTokenSecret(ACCESS_TOKEN_SECRET);
 	 
-	Configuration conf = cb.build();
+	Configuration conf1 = cb1.build();
 	 
-	twitter = new TwitterFactory(conf).getInstance();
+	twitter = new TwitterFactory(conf1).getInstance();
 	 }
 	public static void main(String[] args) throws TwitterException {
 		// TODO Auto-generated method stub
@@ -47,10 +45,10 @@ public class TredingTopic {
 		
 		 
 		// get trends by woeid (Where On Earth ID)
-		 int woeid = 2459115; // woeid of nyc
-		 System.out.println("Trends of NYC (woeid: " + woeid + "):");
+		 int woeid = 23424848; // woeid of India
+		 System.out.println("Trends of India (woeid: " + woeid + "):");
 		 List trendNames = getTrendsByWoeid(woeid);
-		
+		System.out.println(trendNames.size());
 		 System.out.println(trendNames);
 		 }
 	
