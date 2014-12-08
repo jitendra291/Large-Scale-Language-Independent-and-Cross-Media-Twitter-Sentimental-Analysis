@@ -1,5 +1,5 @@
-package stream;
-import trends.*;
+package dataCollection;
+
 
 import java.util.TimerTask;
 import java.io.BufferedReader;
@@ -45,42 +45,37 @@ import twitter4j.json.DataObjectFactory;
 import twitter4j.*;
 
 import java.util.*;
-public class SearchTweets extends TimerTask
+public class Data extends TimerTask
 {
 	Date d ;
-	ConfigurationBuilder cb,cb1;
+	static ConfigurationBuilder cb;
 	public static Twitter twitter = null;
 	public static String path = "/user/ranger/btp/";
-	TwitterStream twitterStream = null;
-	FSDataOutputStream fsOutStream ;
-	Path newFilePath;
-	FileSystem fs ;
+	static TwitterStream twitterStream = null;
+	FSInputStream dsInputStream;
+	static FSDataOutputStream fsOutStream;
+	static FSDataOutputStream fsOutStreamES;
+	static Path newFilePath;
+	static FileSystem fs ;
 
 
-	public SearchTweets() 
+	public Data() 
 	{
 		this.cb = new ConfigurationBuilder();
 		this.cb.setJSONStoreEnabled(true);
 		Config.setUserAccessTokens(this.cb);
-		//new TwitterStreamFactory(cb.build()).getInstance();
-		this.cb1 = new ConfigurationBuilder();
-		this.cb1.setJSONStoreEnabled(true);
-		Config.setUserAccessTokens(this.cb1);
-
-
 	}
 
-	public void search(List trends, String count) throws IOException{
-		String[] keywords = new String[trends.size()];
-		for (int i = 0; i < trends.size(); i++) {
-			keywords[i] = ((String)trends.get(i));	
-		}
-		newFilePath = new Path(path+count+"/tweets.txt");
+	public void search(String[] keywords) throws IOException{
+
+		newFilePath = new Path(path+"entweets.txt");
 		fs.createNewFile(newFilePath);
 		fsOutStream = fs.create(newFilePath);
-		twitterStream = new TwitterStreamFactory(this.cb1.build()).getInstance();
+		newFilePath = new Path(path+"estweets.txt");
+		fs.createNewFile(newFilePath);
+		fsOutStreamES = fs.create(newFilePath);
+		twitterStream = new TwitterStreamFactory(this.cb.build()).getInstance();
 		StatusListener listener = new StatusListener() {
-			long count =0;
 			@Override
 			public void onException(Exception arg0) {
 				// TODO Auto-generated method stub
@@ -97,20 +92,31 @@ public class SearchTweets extends TimerTask
 			public void onStatus(Status s) {
 				// TODO Auto-generated method stub
 
-				if(!s.getUser().getLang().equals("en"))	return;
+			if(s.getUser().getLang().equals("en")){
 				try 
 				{
-					System.out.println("Entered Status");
-					count++;		
-					System.out.println(count);
-					byte[] tweet = s.toString().getBytes();
+					System.out.println("English Status");
+					byte[] tweet = s.getText().getBytes();
 					fsOutStream.write(tweet);
 					fsOutStream.write("\n".getBytes());
 					fsOutStream.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
+				}
+			 if(s.getUser().getLang().equals("es")){
+					try 
+					{
+						System.out.println("Spanish  Status");
+						byte[] tweet = s.getText().getBytes();
+						fsOutStreamES.write(tweet);
+						fsOutStreamES.write("\n".getBytes());
+						fsOutStreamES.flush();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					}
+				else return ;
 			}
 			@Override
 			public void onStallWarning(StallWarning arg0) {
@@ -134,58 +140,40 @@ public class SearchTweets extends TimerTask
 		if ((keywords == null) || (keywords.length == 0))
 			twitterStream.sample();
 		else{
-			twitterStream.filter(new FilterQuery().language(keywords));
-			twitterStream.filter(new FilterQuery().track(keywords));
-	
+			String [] language = new String[2];
+			language[0] = "en";
+			language[1] = "es";
+			FilterQuery fq = new FilterQuery();
+			fq.track(keywords);
+			fq.language(language);
+			twitterStream.filter(fq);
+
 		}}
 
-	public void headStart(List trends,String count) throws IOException 
-	{
-		fs = FileSystem.get(new Configuration());
-		newFilePath=new Path(path+count);
-		fs.mkdirs(newFilePath);
-		newFilePath = new Path(path+count+"/keywords.txt");
-		fs.createNewFile(newFilePath);
-		fsOutStream= fs.create(newFilePath);
 
-		for(int i = 0;i<trends.size();i++)
-		{
-			fsOutStream.write(trends.get(i).toString().getBytes());
-			fsOutStream.writeBytes("\n");
-		}
-		fsOutStream.flush();
-		String[] keywords = new String[trends.size()];
-		for (int i = 0; i < trends.size(); i++) {
-			keywords[i] = ((String)trends.get(i));	
-		}
-
-	}
-	public  List getTrendsByWoeid(int woeid)
-			throws TwitterException {
-		twitter = new TwitterFactory(this.cb.build()).getInstance();
-
-		List trendNames = new ArrayList();
-		Trends trends = twitter.getPlaceTrends(woeid);
-		Trend[] trend = trends.getTrends();
-		for (Trend t : trend) {
-			trendNames.add(t.getName());
-		}
-		return trendNames;
-	}
-	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-
-
 		try {
-			d = new Date();
-			String str = d.toString();
-			str = "Day_"+str.substring(8,10)+"_Min_"+str.substring(14, 16);
-			List keywords = getTrendsByWoeid(23424848);
-			headStart(keywords,str);
-			search(keywords, str);
-		} catch (IOException | TwitterException e) {
+			
+			Path pt=new Path(path+"/emotions.txt");
+			fs = FileSystem.get(new Configuration());
+			BufferedReader br=new BufferedReader(new InputStreamReader(fs.open(pt)));
+			Vector k = new Vector();
+			while (true) {
+				String keyword = br.readLine();
+				if (keyword == null) break;
+				if (!keyword.startsWith("//"))
+					k.add(keyword);
+			}
+			String[] keywords = new String[k.size()];
+			for (int i = 0; i < k.size(); i++) {
+				keywords[i] = ((String)k.get(i));
+			}
+
+
+			search(keywords);
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 
